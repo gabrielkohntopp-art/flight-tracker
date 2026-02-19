@@ -1,1 +1,768 @@
-<!-- test -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minhas Passagens · CGH ↔ CWB</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#06090f; --surface:#0e1520; --surface2:#161f2e; --surface3:#1c2a3e;
+    --border:#1e2d42; --border2:#263650;
+    --accent:#3b82f6; --accent-glow:rgba(59,130,246,0.15);
+    --green:#10b981; --orange:#f59e0b; --red:#ef4444; --purple:#8b5cf6;
+    --gol:#f07720; --latam:#e8223f; --azul:#1e40af;
+    --text:#e2e8f0; --muted:#4a6080; --muted2:#6b82a0;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;}
+  body::before{content:'';position:fixed;inset:0;
+    background-image:linear-gradient(rgba(59,130,246,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.04) 1px,transparent 1px);
+    background-size:48px 48px;pointer-events:none;z-index:0;}
+  .wrap{max-width:920px;margin:0 auto;padding:36px 20px;position:relative;z-index:1;}
+
+  /* Header */
+  .logo-tag{font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .logo-tag::before{content:'';display:block;width:20px;height:1px;background:var(--accent);}
+  h1{font-family:'Syne',sans-serif;font-size:clamp(26px,5vw,46px);font-weight:800;line-height:1.05;letter-spacing:-1px;margin-bottom:6px;}
+  h1 em{font-style:normal;color:var(--gol);}
+  .header-sub{color:var(--muted2);font-size:11px;margin-bottom:32px;}
+
+  /* Stats */
+  .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+  @media(max-width:600px){.stats-bar{grid-template-columns:repeat(2,1fr);}}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;position:relative;overflow:hidden;}
+  .stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;}
+  .stat.blue::after{background:var(--accent);}  .stat.green::after{background:var(--green);}
+  .stat.orange::after{background:var(--orange);} .stat.gol::after{background:var(--gol);}
+  .stat-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1;margin-bottom:6px;}
+  .stat.blue .stat-val{color:var(--accent);} .stat.green .stat-val{color:var(--green);}
+  .stat.orange .stat-val{color:var(--orange);} .stat.gol .stat-val{color:var(--gol);}
+  .stat-label{font-size:10px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;}
+
+  /* Tabs */
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:28px;}
+  .tab{padding:10px 18px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;border:none;background:none;color:var(--muted2);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .tab:hover:not(.active){color:var(--text);}
+  .panel{display:none;} .panel.active{display:block;}
+
+  /* Card */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:20px;}
+  .card-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--muted2);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .card-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* Template */
+  .tpl-box{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:18px;margin-bottom:20px;}
+  .tpl-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+  .tpl-row:last-child{margin-bottom:0;}
+  .tpl-label{font-size:10px;color:var(--muted2);letter-spacing:1px;text-transform:uppercase;width:80px;flex-shrink:0;}
+  .tpl-val{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;}
+  .gol-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(240,119,32,.12);border:1px solid rgba(240,119,32,.4);color:var(--gol);border-radius:3px;padding:3px 10px;font-size:12px;font-family:'Syne',sans-serif;font-weight:700;}
+
+  /* Semanas */
+  .weeks-nav{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .week-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted2);border-radius:4px;padding:7px 14px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;transition:all .2s;}
+  .week-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .week-label{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;flex:1;text-align:center;}
+
+  /* Datas */
+  .dates-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+  @media(max-width:480px){.dates-grid{grid-template-columns:1fr;}}
+  .date-block{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:16px;}
+  .date-dir{font-size:10px;letter-spacing:2px;color:var(--muted2);text-transform:uppercase;margin-bottom:6px;}
+  .date-val{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;margin-bottom:3px;}
+  .date-info{font-size:11px;color:var(--muted2);}
+
+  /* Limite */
+  .limit-bar{display:flex;align-items:center;gap:12px;background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.25);border-radius:4px;padding:12px 16px;margin-bottom:16px;font-size:12px;}
+  .limit-bar strong{color:var(--green);}
+
+  /* Links de busca */
+  .search-links{display:flex;flex-direction:column;gap:10px;}
+  .sl-card{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;transition:border-color .2s;}
+  .sl-card:hover{border-color:var(--border2);}
+  .sl-card.priority{border-color:rgba(240,119,32,.4);background:rgba(240,119,32,.04);}
+  .sl-airline{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;width:55px;flex-shrink:0;}
+  .sl-info{flex:1;min-width:140px;}
+  .sl-route{font-size:12px;font-weight:500;margin-bottom:3px;}
+  .sl-detail{font-size:11px;color:var(--muted2);}
+  .sl-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+  .tag-pref{font-size:10px;letter-spacing:1px;padding:2px 8px;border-radius:2px;font-family:'Syne',sans-serif;font-weight:700;background:rgba(240,119,32,.15);color:var(--gol);border:1px solid rgba(240,119,32,.3);}
+  .tag-alt{font-size:10px;padding:2px 8px;border-radius:2px;font-family:'Syne',sans-serif;font-weight:700;background:rgba(107,130,160,.1);color:var(--muted2);border:1px solid var(--border);}
+
+  a.btn-search{display:inline-flex;align-items:center;gap:5px;background:var(--accent);color:#fff;border:none;border-radius:4px;padding:8px 14px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;cursor:pointer;text-decoration:none;transition:opacity .2s;white-space:nowrap;}
+  a.btn-search:hover{opacity:.85;}
+  a.btn-search.gol-btn{background:var(--gol);}
+  button.btn-reg{background:var(--green);color:#000;border:none;border-radius:4px;padding:8px 14px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;transition:opacity .2s;}
+  button.btn-reg:hover{opacity:.85;}
+
+  /* Separator */
+  .sep{text-align:center;color:var(--muted);font-size:11px;margin:6px 0;letter-spacing:2px;}
+
+  /* Tabela */
+  .table-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  .table-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .table-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--muted2);text-transform:uppercase;}
+  .filter-row{display:flex;gap:8px;}
+  .filter-btn{background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted2);cursor:pointer;transition:all .2s;}
+  .filter-btn.active{background:var(--accent-glow);border-color:var(--accent);color:var(--accent);}
+  table{width:100%;border-collapse:collapse;}
+  thead th{text-align:left;padding:11px 18px;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--surface2);font-weight:400;}
+  tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+  tbody tr:last-child{border-bottom:none;}
+  tbody tr:hover{background:var(--surface2);}
+  td{padding:12px 18px;font-size:13px;vertical-align:middle;}
+  .route-cell{font-family:'Syne',sans-serif;font-weight:700;}
+  .arrow{color:var(--muted);margin:0 4px;}
+  .cia-badge{display:inline-flex;align-items:center;gap:5px;background:var(--surface3);border:1px solid var(--border2);border-radius:3px;padding:3px 10px;font-size:11px;}
+  .cia-dot{width:6px;height:6px;border-radius:50%;}
+  .price-cell{font-family:'Syne',sans-serif;font-weight:700;color:var(--green);}
+  .date-cell{color:var(--muted2);font-size:12px;}
+  .time-cell{color:var(--accent);font-size:12px;font-style:italic;}
+  .del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;padding:4px 8px;border-radius:3px;transition:all .2s;}
+  .del-btn:hover{color:var(--red);background:rgba(239,68,68,.1);}
+  .empty-state{text-align:center;padding:50px 20px;color:var(--muted);}
+  .empty-state .icon{font-size:36px;margin-bottom:10px;}
+
+  /* Form manual */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  @media(max-width:560px){.form-grid{grid-template-columns:1fr 1fr;}}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:10px;color:var(--muted2);letter-spacing:1px;text-transform:uppercase;}
+  .inp{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 14px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;outline:none;transition:border-color .2s;width:100%;}
+  .inp:focus{border-color:var(--accent);}
+  .btn-add{background:var(--accent);color:#fff;border:none;border-radius:4px;padding:11px 24px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:opacity .2s;margin-top:14px;}
+  .btn-add:hover{opacity:.85;}
+
+  /* Analytics */
+  .bars{display:flex;align-items:flex-end;gap:8px;height:90px;}
+  .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
+  .bar-col{width:100%;background:var(--accent);border-radius:3px 3px 0 0;min-height:3px;transition:height .4s;}
+  .bar-label{font-size:9px;color:var(--muted2);text-align:center;}
+  .bar-val{font-size:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;}
+  .cia-split{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;}
+  .cia-item{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 16px;flex:1;min-width:100px;}
+  .cia-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;}
+  .cia-sub{font-size:11px;color:var(--muted2);}
+
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .overlay.open{opacity:1;pointer-events:all;}
+  .modal{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:28px;width:90%;max-width:440px;transform:translateY(16px);transition:transform .2s;}
+  .overlay.open .modal{transform:translateY(0);}
+  .modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:6px;}
+  .modal-sub{font-size:11px;color:var(--muted2);margin-bottom:20px;}
+  .mrow{display:flex;gap:10px;margin-bottom:12px;}
+  .mfield{flex:1;display:flex;flex-direction:column;gap:6px;}
+  .mfield label{font-size:10px;color:var(--muted2);letter-spacing:1px;text-transform:uppercase;}
+  .mfooter{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;}
+  .btn-cancel{background:var(--surface2);border:1px solid var(--border);color:var(--muted2);border-radius:4px;padding:10px 18px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;}
+  .btn-confirm{background:var(--green);color:#000;border:none;border-radius:4px;padding:10px 20px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;}
+
+  /* Toast */
+  .toast{position:fixed;bottom:28px;right:28px;background:var(--green);color:#000;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;padding:12px 22px;border-radius:4px;z-index:999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  /* Buy Signal Tag */
+  .buy-signal{position:fixed;top:18px;right:18px;z-index:200;border-radius:8px;padding:10px 16px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;line-height:1.45;max-width:220px;box-shadow:0 4px 24px rgba(0,0,0,.4);cursor:default;transition:all .3s;}
+  .buy-signal .bs-icon{font-size:18px;margin-bottom:4px;display:block;}
+  .buy-signal .bs-title{font-size:13px;font-weight:800;display:block;margin-bottom:2px;}
+  .buy-signal .bs-sub{font-size:10px;font-weight:400;opacity:.85;display:block;}
+  .buy-signal.good{background:linear-gradient(135deg,#065f46,#10b981);border:1px solid rgba(16,185,129,.5);color:#fff;}
+  .buy-signal.wait{background:linear-gradient(135deg,#78350f,#f59e0b);border:1px solid rgba(245,158,11,.5);color:#fff;}
+  .buy-signal.bad {background:linear-gradient(135deg,#7f1d1d,#ef4444);border:1px solid rgba(239,68,68,.4);color:#fff;}
+  .buy-signal .bs-tooltip{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:12px 14px;font-size:10px;font-weight:400;color:var(--muted2);line-height:1.7;width:240px;box-shadow:0 4px 20px rgba(0,0,0,.4);}
+  .buy-signal:hover .bs-tooltip{display:block;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="logo-tag">TRACKER PESSOAL · GOL SMILES</div>
+  <h1>CGH ↔ CWB<br><em>Toda Quinta</em></h1>
+  <div class="header-sub">Congonhas (SP) → Curitiba · Lazer pessoal · Limite R$ 500 ida+volta c/ taxas</div>
+
+  <div class="stats-bar">
+    <div class="stat blue"><div class="stat-val" id="s-total">R$ 0</div><div class="stat-label">Total Gasto</div></div>
+    <div class="stat green"><div class="stat-val" id="s-count">0</div><div class="stat-label">Passagens</div></div>
+    <div class="stat orange"><div class="stat-val" id="s-media">R$ 0</div><div class="stat-label">Média / voo</div></div>
+    <div class="stat gol"><div class="stat-val" id="s-gol">0</div><div class="stat-label">Voos GOL</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('buscar')">🔍 Buscar Voo</button>
+    <button class="tab" onclick="showTab('historico')">📋 Histórico</button>
+    <button class="tab" onclick="showTab('manual')">✏️ Registrar</button>
+    <button class="tab" onclick="showTab('analytics')">📊 Analytics</button>
+  </div>
+
+  <!-- BUSCAR -->
+  <div id="tab-buscar" class="panel active">
+
+    <div class="card">
+      <div class="card-title">Seu Template de Rota</div>
+      <div class="tpl-box">
+        <div class="tpl-row"><div class="tpl-label">Rota</div><div class="tpl-val">CGH → CWB (ida) &nbsp;·&nbsp; CWB → CGH (volta)</div></div>
+        <div class="tpl-row"><div class="tpl-label">Ida</div><div class="tpl-val">Quintas-feiras · após 19h00</div></div>
+        <div class="tpl-row"><div class="tpl-label">Volta</div><div class="tpl-val">Domingos · após 18h00</div></div>
+        <div class="tpl-row"><div class="tpl-label">Limite</div><div class="tpl-val" style="color:var(--green)">R$ 500 total com taxas</div></div>
+        <div class="tpl-row"><div class="tpl-label">Preferência</div><div class="gol-badge">✈ GOL · Smiles</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Próximas Semanas</div>
+
+      <div class="weeks-nav">
+        <button class="week-btn" onclick="prevWeek()">← Anterior</button>
+        <div class="week-label" id="week-label">—</div>
+        <button class="week-btn" onclick="nextWeek()">Próxima →</button>
+      </div>
+
+      <div class="dates-grid">
+        <div class="date-block">
+          <div class="date-dir">✈ IDA</div>
+          <div class="date-val" id="d-quinta">—</div>
+          <div class="date-info">Quinta-feira · após 19h00</div>
+        </div>
+        <div class="date-block">
+          <div class="date-dir">↩ VOLTA</div>
+          <div class="date-val" id="d-domingo">—</div>
+          <div class="date-info">Domingo · após 18h00</div>
+        </div>
+      </div>
+
+      <div class="limit-bar">
+        🎯 Limite: <strong>&nbsp;R$ 500&nbsp;</strong> ida+volta com taxas. GOL preferencial para acúmulo Smiles. Após conferir o preço no site, clique em <strong>&nbsp;Registrar no Tracker</strong>.
+      </div>
+
+      <div class="search-links" id="links-container"><!-- JS --></div>
+    </div>
+
+  </div>
+
+  <!-- HISTÓRICO -->
+  <div id="tab-historico" class="panel">
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title">Histórico de Voos</div>
+        <div class="filter-row">
+          <button class="filter-btn active" onclick="filterBy('all',this)">Todos</button>
+          <button class="filter-btn" onclick="filterBy('GOL',this)">GOL</button>
+          <button class="filter-btn" onclick="filterBy('LATAM',this)">LATAM</button>
+          <button class="filter-btn" onclick="filterBy('Azul',this)">Azul</button>
+        </div>
+      </div>
+      <div id="table-wrap"></div>
+    </div>
+  </div>
+
+  <!-- REGISTRAR MANUAL -->
+  <div id="tab-manual" class="panel">
+    <div class="card">
+      <div class="card-title">Registrar Passagem Manualmente</div>
+      <div class="form-grid">
+        <div class="field"><label>Origem</label><input class="inp" id="f-origem" value="CGH" maxlength="3" style="text-transform:uppercase"/></div>
+        <div class="field"><label>Destino</label><input class="inp" id="f-destino" value="CWB" maxlength="3" style="text-transform:uppercase"/></div>
+        <div class="field"><label>Companhia</label>
+          <select class="inp" id="f-cia"><option value="GOL">GOL</option><option>LATAM</option><option>Azul</option><option>Outra</option></select>
+        </div>
+        <div class="field"><label>Data do Voo</label><input class="inp" id="f-data" type="date"/></div>
+        <div class="field"><label>Horário</label><input class="inp" id="f-hora" type="time"/></div>
+        <div class="field"><label>Preço Total (R$)</label><input class="inp" id="f-preco" type="number" placeholder="0,00" step="0.01" min="0"/></div>
+      </div>
+      <button class="btn-add" onclick="addManual()">✈ Registrar Passagem</button>
+    </div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div id="tab-analytics" class="panel">
+    <div class="card">
+      <div class="card-title">Gastos por Mês</div>
+      <div class="bars" id="bars-container"><span style="color:var(--muted);font-size:12px;margin:auto">Nenhum dado ainda.</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Por Companhia</div>
+      <div class="cia-split" id="cia-split"><span style="color:var(--muted);font-size:12px">Sem registros.</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-title">✅ Registrar Passagem</div>
+    <div class="modal-sub" id="m-context">Preencha os dados após confirmar o preço no site.</div>
+    <div class="mrow">
+      <div class="mfield"><label>Origem</label><input class="inp" id="m-origem" maxlength="3" style="text-transform:uppercase"/></div>
+      <div class="mfield"><label>Destino</label><input class="inp" id="m-destino" maxlength="3" style="text-transform:uppercase"/></div>
+    </div>
+    <div class="mrow">
+      <div class="mfield"><label>Companhia</label>
+        <select class="inp" id="m-cia"><option value="GOL">GOL</option><option>LATAM</option><option>Azul</option><option>Outra</option></select>
+      </div>
+      <div class="mfield"><label>Horário partida</label><input class="inp" id="m-hora" type="time"/></div>
+    </div>
+    <div class="mrow">
+      <div class="mfield"><label>Data do Voo</label><input class="inp" id="m-data" type="date"/></div>
+      <div class="mfield"><label>Preço Pago (R$)</label><input class="inp" id="m-preco" type="number" step="0.01" placeholder="0,00"/></div>
+    </div>
+    <div class="mfooter">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-confirm" onclick="confirmRegister()">✓ Confirmar Registro</button>
+    </div>
+  </div>
+</div>
+
+<div class="buy-signal" id="buy-signal">
+  <span class="bs-icon" id="bs-icon"></span>
+  <span class="bs-title" id="bs-title"></span>
+  <span class="bs-sub" id="bs-sub"></span>
+  <div class="bs-tooltip" id="bs-tooltip"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const COR = {GOL:'#f07720',LATAM:'#e8223f',Azul:'#1e40af',Outra:'#8b5cf6'};
+const _defaultFlights = [
+  {id:1001, orig:'CWB', dest:'CGH', cia:'GOL',   data:'2026-03-06', hora:'18:05', preco:274.22},
+  {id:1002, orig:'CGH', dest:'CWB', cia:'GOL',   data:'2026-03-08', hora:'19:00', preco:300.00},
+  {id:1003, orig:'CGH', dest:'CWB', cia:'GOL',   data:'2026-03-13', hora:'07:10', preco:270.63},
+  {id:1004, orig:'CWB', dest:'CGH', cia:'GOL',   data:'2026-03-15', hora:'20:50', preco:270.63},
+  {id:1005, orig:'CWB', dest:'CGH', cia:'LATAM', data:'2026-03-20', hora:'20:25', preco:205.50},
+  {id:1006, orig:'CGH', dest:'CWB', cia:'LATAM', data:'2026-03-22', hora:'21:35', preco:205.50},
+  {id:1007, orig:'CWB', dest:'CGH', cia:'GOL',   data:'2026-04-13', hora:'20:15', preco:183.74},
+  {id:1008, orig:'CGH', dest:'CWB', cia:'LATAM', data:'2026-04-16', hora:'20:10', preco:207.88},
+  {id:1009, orig:'CWB', dest:'CGH', cia:'LATAM', data:'2026-04-20', hora:'20:20', preco:207.88},
+  {id:1010, orig:'CGH', dest:'CWB', cia:'GOL',   data:'2026-04-23', hora:'20:15', preco:166.22},
+  {id:1011, orig:'CWB', dest:'CGH', cia:'GOL',   data:'2026-04-26', hora:'18:15', preco:166.22},
+];
+const _stored = localStorage.getItem('cgh_cwb_flights');
+if(!_stored){ localStorage.setItem('cgh_cwb_flights', JSON.stringify(_defaultFlights)); }
+let flights = JSON.parse(localStorage.getItem('cgh_cwb_flights'));
+let filter = 'all';
+
+// ── Weeks navigation ──
+let weekOffset = 0;
+
+function getThursday(offset){
+  const today = new Date();
+  const day = today.getDay(); // 0=dom
+  const diff = (4 - day + 7) % 7 || 7; // próxima quinta
+  const thu = new Date(today);
+  thu.setDate(today.getDate() + diff + offset * 7);
+  return thu;
+}
+
+function getSunday(thu){
+  const sun = new Date(thu);
+  sun.setDate(thu.getDate() + 3); // quinta + 3 = domingo
+  return sun;
+}
+
+function fmtDateBR(d){ return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+function fmtDateISO(d){
+  // Usar horário local para evitar deslocamento de fuso UTC
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function fmtDatePretty(d){ return d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'}); }
+
+function buildGoogleFlightsURL(orig, dest, dateIda, dateVolta, airline, minHourIda, minHourVolta) {
+  // Constrói o tfs (protobuf base64) do zero — idêntico ao gerado pelo Google
+  function encodeVarint(n) {
+    const bytes = [];
+    while (n > 0x7f) { bytes.push((n & 0x7f) | 0x80); n >>>= 7; }
+    bytes.push(n & 0x7f);
+    return bytes;
+  }
+  function toBytes(s) { return Array.from(s).map(c => c.charCodeAt(0)); }
+  function fieldBytes(fn, wt, ...v) { return [...encodeVarint((fn << 3) | wt), ...v]; }
+  function ld(fn, inner) { return [...encodeVarint((fn << 3) | 2), ...encodeVarint(inner.length), ...inner]; }
+  function airportField(code) {
+    return [...fieldBytes(1, 0, ...encodeVarint(1)), ...ld(2, toBytes(code))];
+  }
+  function buildLeg(date, o, d, minDep) {
+    let inner = [...ld(2, toBytes(date)), ...ld(13, airportField(o)), ...ld(14, airportField(d))];
+    if (minDep !== undefined) {
+      inner = [...inner,
+        ...fieldBytes(4, 0, ...encodeVarint(minDep * 60)),       // min departure (minutos)
+        ...fieldBytes(5, 0, ...encodeVarint(23 * 60 + 59)),      // max departure (23h59)
+      ];
+    }
+    return ld(3, inner);
+  }
+
+  let bytes = [
+    ...fieldBytes(1, 0, ...encodeVarint(28)),
+    ...fieldBytes(2, 0, ...encodeVarint(dateVolta ? 2 : 1)),
+    ...buildLeg(dateIda, orig, dest, minHourIda),
+  ];
+  if (dateVolta) bytes = [...bytes, ...buildLeg(dateVolta, dest, orig, minHourVolta)];
+  bytes = [...bytes,
+    ...fieldBytes(8, 0, ...encodeVarint(1)),
+    ...fieldBytes(9, 0, ...encodeVarint(1)),
+    ...fieldBytes(14, 0, ...encodeVarint(1)),
+    ...ld(16, [0x08,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x01]),
+    ...fieldBytes(19, 0, ...encodeVarint(1)),
+  ];
+
+  const tfs = btoa(String.fromCharCode(...bytes)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  // airlines: G3=GOL, LA=LATAM, AD=Azul
+  const airlineParam = airline ? '&airlines=' + airline : '';
+  return 'https://www.google.com/travel/flights/search?tfs=' + tfs + '&hl=pt-BR&gl=BR&curr=BRL&sort=1' + airlineParam;
+}
+
+function buildKayakURL(orig, dest, dateIda, dateVolta, airline, minHourIda) {
+  // Códigos IATA Kayak: G3=GOL, LA=LATAM, AD=Azul
+  let url = dateVolta
+    ? 'https://www.kayak.com.br/flights/' + orig + '-' + dest + '/' + dateIda + '/' + dateVolta + '?sort=price_a'
+    : 'https://www.kayak.com.br/flights/' + orig + '-' + dest + '/' + dateIda + '?sort=price_a';
+  if (airline) url += '&airlines=' + airline;
+  if (minHourIda) url += '&deptime=' + String(minHourIda).padStart(2,'0') + '00-2359';
+  return url;
+}
+
+function buildGOLURL(orig,dest,date){
+  return `https://www.voegol.com.br/pt/passagens-aereas?origem=${orig}&destino=${dest}&dataIda=${date}&adultos=1&criancas=0&bebes=0&tipoBusca=trecho`;
+}
+
+function buildLatamURL(orig,dest,date){
+  return `https://www.latamairlines.com/br/pt/oferta-voos?origin=${orig}&outbound=${date}T00%3A00%3A00.000Z&destination=${dest}&adt=1&chd=0&inf=0&trip=OW&cabin=Economy&redemption=false`;
+}
+
+function renderWeek(){
+  const thu = getThursday(weekOffset);
+  const sun = getSunday(thu);
+  const thuISO = fmtDateISO(thu);
+  const sunISO = fmtDateISO(sun);
+
+  document.getElementById('week-label').textContent =
+    `${thu.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})} – ${sun.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})}`;
+  document.getElementById('d-quinta').textContent = fmtDateBR(thu);
+  document.getElementById('d-domingo').textContent = fmtDateBR(sun);
+
+  const c = document.getElementById('links-container');
+  c.innerHTML = `
+    <div style="font-size:11px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">IDA+VOLTA · ${thu.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})} (ida) · ${sun.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})} (volta)</div>
+
+    <div class="sl-card priority">
+      <div class="sl-airline" style="color:var(--gol)">GOL</div>
+      <div class="sl-info">
+        <div class="sl-route">CGH → CWB → CGH · Round Trip</div>
+        <div class="sl-detail">Ida após 19h · Volta após 18h · GOL filtrado · menor preço</div>
+      </div>
+      <div class="sl-actions">
+        <span class="tag-pref">★ PREFERIDO</span>
+        <a class="btn-search" style="background:#34a853" href="${buildGoogleFlightsURL('CGH','CWB',thuISO,sunISO,'G3',19,18)}" target="_blank">🌐 Google Flights</a>
+        <a class="btn-search" style="background:#ff690f" href="${buildKayakURL('CGH','CWB',thuISO,sunISO,'G3',19)}" target="_blank">🔍 Kayak</a>
+        <button class="btn-reg" onclick="openModal('CGH','CWB','GOL','${thuISO}')">+ Registrar</button>
+      </div>
+    </div>
+
+    <div class="sl-card">
+      <div class="sl-airline" style="color:var(--latam)">LATAM</div>
+      <div class="sl-info">
+        <div class="sl-route">CGH → CWB → CGH · Round Trip</div>
+        <div class="sl-detail">Ida após 19h · Volta após 18h · LATAM filtrado · menor preço</div>
+      </div>
+      <div class="sl-actions">
+        <span class="tag-alt">ALTERNATIVA</span>
+        <a class="btn-search" style="background:#34a853" href="${buildGoogleFlightsURL('CGH','CWB',thuISO,sunISO,'LA',19,18)}" target="_blank">🌐 Google Flights</a>
+        <a class="btn-search" style="background:#ff690f" href="${buildKayakURL('CGH','CWB',thuISO,sunISO,'LA',19)}" target="_blank">🔍 Kayak</a>
+        <button class="btn-reg" onclick="openModal('CGH','CWB','LATAM','${thuISO}')">+ Registrar</button>
+      </div>
+    </div>
+
+    <div class="sl-card">
+      <div class="sl-airline" style="color:var(--azul)">Azul</div>
+      <div class="sl-info">
+        <div class="sl-route">CGH → CWB → CGH · Round Trip</div>
+        <div class="sl-detail">Ida após 19h · Volta após 18h · Azul filtrado · menor preço</div>
+      </div>
+      <div class="sl-actions">
+        <span class="tag-alt">ALTERNATIVA</span>
+        <a class="btn-search" style="background:#34a853" href="${buildGoogleFlightsURL('CGH','CWB',thuISO,sunISO,'AD',19,18)}" target="_blank">🌐 Google Flights</a>
+        <a class="btn-search" style="background:#ff690f" href="${buildKayakURL('CGH','CWB',thuISO,sunISO,'AD',19)}" target="_blank">🔍 Kayak</a>
+        <button class="btn-reg" onclick="openModal('CGH','CWB','Azul','${thuISO}')">+ Registrar</button>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;padding:12px 14px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:4px;font-size:11px;color:var(--muted2);line-height:1.7;">
+      💡 <strong style="color:var(--text)">Dica:</strong> Cada botão busca round trip já filtrado por companhia, horário (ida após 19h · volta após 18h) e ordenado por menor preço. Se não houver voos no horário, o site mostrará a busca completa. Se o total ≤ <strong style="color:var(--green)">R$ 500</strong>, clique em <strong style="color:var(--green)">Registrar</strong>.
+    </div>
+  `;
+}
+
+function prevWeek(){ weekOffset = Math.max(0,weekOffset-1); renderWeek(); }
+function nextWeek(){ weekOffset++; renderWeek(); }
+
+// ── Modal ──
+function openModal(orig,dest,cia,date){
+  document.getElementById('m-origem').value = orig;
+  document.getElementById('m-destino').value = dest;
+  document.getElementById('m-cia').value = cia;
+  document.getElementById('m-data').value = date;
+  document.getElementById('m-hora').value = '';
+  document.getElementById('m-preco').value = '';
+  document.getElementById('m-context').textContent = `Registrando: ${orig} → ${dest} · ${new Date(date+'T12:00:00').toLocaleDateString('pt-BR')} · ${cia}`;
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
+
+function confirmRegister(){
+  const orig  = document.getElementById('m-origem').value.toUpperCase();
+  const dest  = document.getElementById('m-destino').value.toUpperCase();
+  const cia   = document.getElementById('m-cia').value;
+  const data  = document.getElementById('m-data').value;
+  const hora  = document.getElementById('m-hora').value;
+  const preco = parseFloat(document.getElementById('m-preco').value);
+  if(!preco || preco <= 0){ alert('Insira o preço pago.'); return; }
+  flights.unshift({id:Date.now(),orig,dest,cia,data,hora,preco});
+  save(); render(); closeModal();
+  showToast('✓ Passagem registrada no tracker!');
+}
+
+// ── Manual ──
+function addManual(){
+  const orig  = document.getElementById('f-origem').value.toUpperCase();
+  const dest  = document.getElementById('f-destino').value.toUpperCase();
+  const cia   = document.getElementById('f-cia').value;
+  const data  = document.getElementById('f-data').value;
+  const hora  = document.getElementById('f-hora').value;
+  const preco = parseFloat(document.getElementById('f-preco').value);
+  if(!orig||!dest||!cia||!data||!preco){ alert('Preencha todos os campos.'); return; }
+  flights.unshift({id:Date.now(),orig,dest,cia,data,hora,preco});
+  save(); render();
+  document.getElementById('f-data').value='';
+  document.getElementById('f-hora').value='';
+  document.getElementById('f-preco').value='';
+  showToast('✓ Passagem registrada!');
+}
+
+// ── Save / render ──
+function save(){ localStorage.setItem('cgh_cwb_flights',JSON.stringify(flights)); }
+
+function fmtBRL(v){ return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtDt(d){
+  if(!d) return '—';
+  const [y,m,day]=d.split('-');
+  return `${day}/${m}/${y}`;
+}
+
+function render(){
+  // stats
+  const total = flights.reduce((a,f)=>a+f.preco,0);
+  const media = flights.length ? total/flights.length : 0;
+  const gols  = flights.filter(f=>f.cia==='GOL').length;
+  document.getElementById('s-total').textContent = fmtBRL(total);
+  document.getElementById('s-count').textContent = flights.length;
+  document.getElementById('s-media').textContent = flights.length ? fmtBRL(media) : 'R$ 0';
+  document.getElementById('s-gol').textContent   = gols;
+
+  renderTable();
+  renderAnalytics();
+}
+
+function filterBy(val,btn){
+  filter=val;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function renderTable(){
+  const list = filter==='all' ? flights : flights.filter(f=>f.cia===filter);
+  const wrap = document.getElementById('table-wrap');
+  if(!list.length){
+    wrap.innerHTML=`<div class="empty-state"><div class="icon">✈️</div><p>${flights.length?'Nenhum voo neste filtro.':'Nenhuma passagem ainda.<br>Use a aba Buscar Voo para começar!'}</p></div>`;
+    return;
+  }
+  wrap.innerHTML=`<table>
+    <thead><tr>
+      <th>Rota</th><th>Companhia</th><th>Data</th><th>Horário</th><th>Preço</th><th></th>
+    </tr></thead>
+    <tbody>${list.map(f=>`
+      <tr>
+        <td class="route-cell">${f.orig}<span class="arrow">→</span>${f.dest}</td>
+        <td><span class="cia-badge"><span class="cia-dot" style="background:${COR[f.cia]||'#888'}"></span>${f.cia}</span></td>
+        <td class="date-cell">${fmtDt(f.data)}</td>
+        <td class="time-cell">${f.hora||'—'}</td>
+        <td class="price-cell">${fmtBRL(f.preco)}</td>
+        <td><button class="del-btn" onclick="del(${f.id})">✕</button></td>
+      </tr>`).join('')}
+    </tbody></table>`;
+}
+
+function del(id){ flights=flights.filter(f=>f.id!==id); save(); render(); }
+
+function renderAnalytics(){
+  // by month
+  const byM={};
+  flights.forEach(f=>{ const k=f.data?f.data.slice(0,7):'N/A'; byM[k]=(byM[k]||0)+f.preco; });
+  const months=Object.keys(byM).sort().slice(-6);
+  const vals=months.map(m=>byM[m]);
+  const maxV=Math.max(...vals)||1;
+  const mn={'01':'Jan','02':'Fev','03':'Mar','04':'Abr','05':'Mai','06':'Jun','07':'Jul','08':'Ago','09':'Set','10':'Out','11':'Nov','12':'Dez'};
+  const bars=document.getElementById('bars-container');
+  bars.innerHTML = months.length
+    ? months.map((m,i)=>{
+        const pct=Math.max(6,(vals[i]/maxV)*100);
+        const lbl=m==='N/A'?'N/A':(mn[m.slice(5)]||m.slice(5))+' '+m.slice(2,4);
+        return `<div class="bar-wrap">
+          <div class="bar-val">${fmtBRL(vals[i]).replace('R$ ','')}</div>
+          <div class="bar-col" style="height:${pct}%"></div>
+          <div class="bar-label">${lbl}</div>
+        </div>`;
+      }).join('')
+    : '<span style="color:var(--muted);font-size:12px;margin:auto">Nenhum dado ainda.</span>';
+
+  // by cia
+  const byCia={};
+  flights.forEach(f=>{ byCia[f.cia]=(byCia[f.cia]||0)+f.preco; });
+  const split=document.getElementById('cia-split');
+  split.innerHTML = Object.keys(byCia).length
+    ? Object.entries(byCia).map(([c,v])=>`
+        <div class="cia-item">
+          <div class="cia-name" style="color:${COR[c]||'#888'}">${c}</div>
+          <div class="cia-sub">${fmtBRL(v)} · ${flights.filter(f=>f.cia===c).length} voo(s)</div>
+        </div>`).join('')
+    : '<span style="color:var(--muted);font-size:12px">Sem registros.</span>';
+}
+
+function showTab(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ── Buy Signal ──
+function renderBuySignal() {
+  const now = new Date();
+  const dow = now.getDay();   // 0=dom, 1=seg, 2=ter, 3=qua, 4=qui, 5=sex, 6=sab
+  const hour = now.getHours();
+
+  // Dados baseados em pesquisas reais (Google Flights, Skyscanner, Kayak, Mundi):
+  // • Terça e quarta: melhores dias para COMPRAR (companhias ajustam tarifas após fim de semana)
+  // • Sábado e domingo: pior para comprar (alta demanda de pesquisa eleva preços)
+  // • Sexta: neutro/ruim (alta demanda de viajantes de lazer)
+  // • Segunda: neutro/leve melhora (promoções de madrugada ainda ativas)
+  // • Quinta: neutro (seu dia de viagem — preços já sobem para quem compra de última hora)
+  // • Antecedência ideal: 30-60 dias antes do voo
+  // • Horário: manhã cedo (antes das 10h) e noite (após 21h) costumam ter tarifas revisadas
+
+  // Calcular dias até a próxima quinta (viagem)
+  const thu = new Date(now);
+  const diffToThu = (4 - dow + 7) % 7 || 7;
+  thu.setDate(now.getDate() + diffToThu);
+  const daysUntilFlight = Math.ceil((thu - now) / (1000*60*60*24));
+
+  // Score de 0-100 (quanto maior, melhor para comprar hoje)
+  let score = 50;
+  let signal, icon, title, sub, tooltip;
+
+  // Fator 1: dia da semana de compra
+  const dayScore = {0:-20, 1:5, 2:20, 3:20, 4:-5, 5:-15, 6:-20}; // dom, seg...sab
+  score += dayScore[dow] || 0;
+
+  // Fator 2: horário do dia
+  if (hour >= 0 && hour < 6)   score += 10;  // madrugada: tarifas revisadas
+  else if (hour >= 6 && hour < 10) score += 8; // manhã cedo: bom
+  else if (hour >= 21)          score += 5;   // noite: tarifas noturnas
+  else if (hour >= 17 && hour < 21) score -= 8; // hora do rush: pesquisa alta
+
+  // Fator 3: antecedência até o voo
+  if (daysUntilFlight >= 45)       score += 15; // >45 dias: ótimo janela
+  else if (daysUntilFlight >= 30)  score += 10; // 30-45: bom
+  else if (daysUntilFlight >= 14)  score += 0;  // 2-4 semanas: neutro
+  else if (daysUntilFlight >= 7)   score -= 10; // 1-2 semanas: ruim
+  else                              score -= 25; // <7 dias: última hora, caro
+
+  // Nomes dos dias
+  const dayNames = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+  const dayNamesShort = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+  // Próximos dias bons para comprar (ter/qua)
+  function nextGoodDay() {
+    for (let i = 1; i <= 7; i++) {
+      const d = (dow + i) % 7;
+      if (d === 2) return `${dayNames[2]} (em ${i}d)`;
+      if (d === 3) return `${dayNames[3]} (em ${i}d)`;
+    }
+  }
+
+  const el = document.getElementById('buy-signal');
+
+  if (score >= 60) {
+    signal = 'good';
+    icon = '✅';
+    title = 'Bom dia para comprar';
+    if (daysUntilFlight >= 30) {
+      sub = `${dayNamesShort[dow]} · ${daysUntilFlight}d até o voo`;
+    } else {
+      sub = `${dayNamesShort[dow]} · Compre logo`;
+    }
+    tooltip = `
+      <strong style="color:var(--green)">✅ Condições favoráveis hoje</strong><br><br>
+      📅 <b>Dia de compra:</b> ${dayNames[dow]} costuma ter tarifas revisadas pelas cias.<br>
+      ⏰ <b>Hora:</b> ${hour}h — ${hour < 10 ? 'manhã cedo, bom para ofertas' : hour >= 21 ? 'noite, cias revisam tarifas' : 'horário OK'}<br>
+      ✈️ <b>Antecedência:</b> ${daysUntilFlight} dias — ${daysUntilFlight >= 30 ? 'janela ideal (30-60d)' : 'compre logo'}<br><br>
+      <em>Fonte: Google Flights, Skyscanner & Kayak data</em>
+    `;
+  } else if (score >= 35) {
+    signal = 'wait';
+    icon = '⏳';
+    title = 'Momento neutro';
+    sub = `Aguarde ${nextGoodDay()}`;
+    tooltip = `
+      <strong style="color:var(--orange)">⏳ Pode melhorar em breve</strong><br><br>
+      📅 <b>Hoje:</b> ${dayNames[dow]} — demanda moderada de pesquisa.<br>
+      ✈️ <b>Antecedência:</b> ${daysUntilFlight} dias até o voo.<br>
+      💡 <b>Dica:</b> Terça e quarta-feira tendem a ter melhores preços. Companhias ajustam tarifas após o fim de semana.<br><br>
+      <em>Fonte: Google Flights, Skyscanner & Kayak data</em>
+    `;
+  } else {
+    signal = 'bad';
+    icon = '⚠️';
+    if (daysUntilFlight < 7) {
+      title = 'Última hora — caro';
+      sub = `Voo em ${daysUntilFlight}d · Preços altos`;
+    } else {
+      title = 'Evite comprar hoje';
+      sub = `Espere ${nextGoodDay()}`;
+    }
+    tooltip = `
+      <strong style="color:var(--red)">⚠️ Condições desfavoráveis</strong><br><br>
+      📅 <b>Hoje:</b> ${dayNames[dow]} — alta demanda de pesquisa eleva preços.<br>
+      ✈️ <b>Antecedência:</b> ${daysUntilFlight} dias. ${daysUntilFlight < 14 ? 'Pouco tempo: se precisar, compre assim mesmo.' : 'Aguarde alguns dias.'}<br>
+      💡 <b>Melhor momento:</b> terça ou quarta-feira, idealmente 30-60 dias antes.<br><br>
+      <em>Fonte: Google Flights, Skyscanner & Kayak data</em>
+    `;
+  }
+
+  el.className = 'buy-signal ' + signal;
+  document.getElementById('bs-icon').textContent = icon;
+  document.getElementById('bs-title').textContent = title;
+  document.getElementById('bs-sub').textContent = sub;
+  document.getElementById('bs-tooltip').innerHTML = tooltip;
+}
+
+// init
+renderWeek();
+render();
+renderBuySignal();
+</script>
+</body>
+</html>
