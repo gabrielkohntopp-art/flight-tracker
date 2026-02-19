@@ -174,6 +174,15 @@
   .buy-signal.bad {background:linear-gradient(135deg,#7f1d1d,#ef4444);border:1px solid rgba(239,68,68,.4);color:#fff;}
   .buy-signal .bs-tooltip{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:12px 14px;font-size:10px;font-weight:400;color:var(--muted2);line-height:1.7;width:240px;box-shadow:0 4px 20px rgba(0,0,0,.4);}
   .buy-signal:hover .bs-tooltip{display:block;}
+
+  /* Best Pick */
+  .sl-card.best-pick{border-color:var(--green);background:rgba(16,185,129,.06);box-shadow:0 0 0 1px rgba(16,185,129,.3);}
+  .sl-card.best-pick:hover{border-color:var(--green);}
+  .best-pick-banner{display:flex;align-items:center;gap:6px;background:var(--green);color:#000;font-family:'Syne',sans-serif;font-weight:800;font-size:10px;letter-spacing:1.5px;padding:4px 10px;border-radius:3px;white-space:nowrap;}
+  .criteria-score{font-size:10px;color:var(--muted2);margin-top:4px;}
+  .criteria-score span{color:var(--green);}
+  .best-pick-cta{background:var(--green);color:#000;border:none;border-radius:4px;padding:9px 16px;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;transition:opacity .2s;display:flex;align-items:center;gap:5px;}
+  .best-pick-cta:hover{opacity:.85;}
 </style>
 </head>
 <body>
@@ -441,63 +450,74 @@ function renderWeek(){
   const sun = getSunday(thu);
   const thuISO = fmtDateISO(thu);
   const sunISO = fmtDateISO(sun);
-
-  document.getElementById('week-label').textContent =
-    `${thu.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})} – ${sun.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})}`;
+  document.getElementById('week-label').textContent = `${thu.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})} – ${sun.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})}`;
   document.getElementById('d-quinta').textContent = fmtDateBR(thu);
   document.getElementById('d-domingo').textContent = fmtDateBR(sun);
 
+  // ── Criteria-based ranking ──
+  // Priority: 1) time window fit (always met, all airlines searched with same filter)
+  // 2) Lowest avg price from history  3) GOL preference as tiebreaker
+  const avgByAirline = (cia) => {
+    const list = flights.filter(f => f.cia === cia);
+    return list.length ? list.reduce((s,f) => s + f.preco, 0) / list.length : null;
+  };
+  const PRICE_LIMIT = 500;
+  const airlines = [
+    { id:'GOL',  code:'G3', color:'var(--gol)',   label:'GOL',   googleCode:'G3', kayakCode:'G3', golPriority:1 },
+    { id:'LATAM',code:'LA', color:'var(--latam)', label:'LATAM', googleCode:'LA', kayakCode:'LA', golPriority:3 },
+    { id:'Azul', code:'AD', color:'var(--azul)',  label:'Azul',  googleCode:'AD', kayakCode:'AD', golPriority:2 },
+  ];
+  airlines.forEach(a => {
+    const avg = avgByAirline(a.id);
+    // Score: lower is better. Normalise price (0-100), GOL bonus -10
+    a.avgPrice = avg;
+    a.priceScore = avg !== null ? avg : PRICE_LIMIT; // unknown → assume max
+    a.totalScore = a.priceScore - (a.id === 'GOL' ? 20 : 0); // GOL gets -20 (cheaper equivalent)
+  });
+  // Sort ascending (lower score = better pick)
+  airlines.sort((a,b) => a.totalScore - b.totalScore);
+  const best = airlines[0];
+
   const c = document.getElementById('links-container');
-  c.innerHTML = `
-    <div style="font-size:11px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">IDA+VOLTA · ${thu.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})} (ida) · ${sun.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})} (volta)</div>
+  const headerLabel = `<div style="font-size:11px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">IDA+VOLTA · ${thu.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})} (ida) · ${sun.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})} (volta)</div>`;
 
-    <div class="sl-card priority">
-      <div class="sl-airline" style="color:var(--gol)">GOL</div>
+  const cardHTML = (a, isBest) => {
+    const gFlights = buildGoogleFlightsURL('CGH','CWB',thuISO,sunISO,a.googleCode,19,18);
+    const kayak    = buildKayakURL('CGH','CWB',thuISO,sunISO,a.kayakCode,19);
+    const avgTxt   = a.avgPrice !== null
+      ? `Seu histórico: <span>R$ ${a.avgPrice.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})} média</span>`
+      : `<span>Sem histórico</span> · estimando pelo limite`;
+    const timeInfo = `Ida após 19h · Volta após 18h · ${a.label} filtrado · menor preço`;
+    const banner = isBest
+      ? `<span class="best-pick-banner">⭐ MELHOR OPÇÃO</span>`
+      : (a.id === 'GOL' ? `<span class="tag-pref">★ PREFERIDO</span>` : `<span class="tag-alt">ALTERNATIVA</span>`);
+    const registerBtn = isBest
+      ? `<button class="best-pick-cta" onclick="openModal('CGH','CWB','${a.id}','${thuISO}')">✓ Registrar esta opção</button>`
+      : `<button class="btn-reg" onclick="openModal('CGH','CWB','${a.id}','${thuISO}')">+ Registrar</button>`;
+    return `
+    <div class="sl-card ${isBest ? 'best-pick' : (a.id==='GOL' ? 'priority' : '')}">
+      <div class="sl-airline" style="color:${a.color}">${a.label}</div>
       <div class="sl-info">
         <div class="sl-route">CGH → CWB → CGH · Round Trip</div>
-        <div class="sl-detail">Ida após 19h · Volta após 18h · GOL filtrado · menor preço</div>
+        <div class="sl-detail">${timeInfo}</div>
+        <div class="criteria-score">${avgTxt}</div>
       </div>
       <div class="sl-actions">
-        <span class="tag-pref">★ PREFERIDO</span>
-        <a class="btn-search" style="background:#34a853" href="${buildGoogleFlightsURL('CGH','CWB',thuISO,sunISO,'G3',19,18)}" target="_blank">🌐 Google Flights</a>
-        <a class="btn-search" style="background:#ff690f" href="${buildKayakURL('CGH','CWB',thuISO,sunISO,'G3',19)}" target="_blank">🔍 Kayak</a>
-        <button class="btn-reg" onclick="openModal('CGH','CWB','GOL','${thuISO}')">+ Registrar</button>
+        ${banner}
+        <a class="btn-search" style="background:#34a853" href="${gFlights}" target="_blank">🌐 Google Flights</a>
+        <a class="btn-search" style="background:#ff690f" href="${kayak}" target="_blank">🔍 Kayak</a>
+        ${registerBtn}
       </div>
-    </div>
+    </div>`;
+  };
 
-    <div class="sl-card">
-      <div class="sl-airline" style="color:var(--latam)">LATAM</div>
-      <div class="sl-info">
-        <div class="sl-route">CGH → CWB → CGH · Round Trip</div>
-        <div class="sl-detail">Ida após 19h · Volta após 18h · LATAM filtrado · menor preço</div>
-      </div>
-      <div class="sl-actions">
-        <span class="tag-alt">ALTERNATIVA</span>
-        <a class="btn-search" style="background:#34a853" href="${buildGoogleFlightsURL('CGH','CWB',thuISO,sunISO,'LA',19,18)}" target="_blank">🌐 Google Flights</a>
-        <a class="btn-search" style="background:#ff690f" href="${buildKayakURL('CGH','CWB',thuISO,sunISO,'LA',19)}" target="_blank">🔍 Kayak</a>
-        <button class="btn-reg" onclick="openModal('CGH','CWB','LATAM','${thuISO}')">+ Registrar</button>
-      </div>
-    </div>
-
-    <div class="sl-card">
-      <div class="sl-airline" style="color:var(--azul)">Azul</div>
-      <div class="sl-info">
-        <div class="sl-route">CGH → CWB → CGH · Round Trip</div>
-        <div class="sl-detail">Ida após 19h · Volta após 18h · Azul filtrado · menor preço</div>
-      </div>
-      <div class="sl-actions">
-        <span class="tag-alt">ALTERNATIVA</span>
-        <a class="btn-search" style="background:#34a853" href="${buildGoogleFlightsURL('CGH','CWB',thuISO,sunISO,'AD',19,18)}" target="_blank">🌐 Google Flights</a>
-        <a class="btn-search" style="background:#ff690f" href="${buildKayakURL('CGH','CWB',thuISO,sunISO,'AD',19)}" target="_blank">🔍 Kayak</a>
-        <button class="btn-reg" onclick="openModal('CGH','CWB','Azul','${thuISO}')">+ Registrar</button>
-      </div>
-    </div>
-
-    <div style="margin-top:12px;padding:12px 14px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:4px;font-size:11px;color:var(--muted2);line-height:1.7;">
-      💡 <strong style="color:var(--text)">Dica:</strong> Cada botão busca round trip já filtrado por companhia, horário (ida após 19h · volta após 18h) e ordenado por menor preço. Se não houver voos no horário, o site mostrará a busca completa. Se o total ≤ <strong style="color:var(--green)">R$ 500</strong>, clique em <strong style="color:var(--green)">Registrar</strong>.
-    </div>
-  `;
+  c.innerHTML = headerLabel
+    + airlines.map((a,i) => cardHTML(a, i === 0)).join('')
+    + `<div style="margin-top:12px;padding:12px 14px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:4px;font-size:11px;color:var(--muted2);line-height:1.7;">
+    💡 <strong style="color:var(--text)">Como funciona o ranking:</strong> ordenado por janela de horário (19h+/18h+) → menor preço médio do seu histórico → GOL prioritário como desempate. Se total ≤ <strong style="color:var(--green)">R$ 500</strong>, clique em <strong style="color:var(--green)">Registrar esta opção</strong>.
+  </div>`;
 }
+
 
 function prevWeek(){ weekOffset = Math.max(0,weekOffset-1); renderWeek(); }
 function nextWeek(){ weekOffset++; renderWeek(); }
