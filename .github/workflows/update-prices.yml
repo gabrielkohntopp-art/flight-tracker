@@ -1,0 +1,34 @@
+name: Update Flight Prices
+
+on:
+  schedule:
+    # Every other day at 10:00 UTC (07:00 BRT)
+    - cron: '0 10 */2 * *'
+  workflow_dispatch: # Manual trigger from GitHub UI
+
+jobs:
+  fetch-prices:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Fetch flight prices
+        run: node scripts/fetch-prices.js
+        env:
+          AMADEUS_KEY: ${{ secrets.AMADEUS_KEY }}
+          AMADEUS_SECRET: ${{ secrets.AMADEUS_SECRET }}
+
+      - name: Commit updated prices
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "data: daily price snapshot"
+          file_pattern: data/prices.json
