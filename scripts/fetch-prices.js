@@ -16,7 +16,7 @@ const ORIG = 'CGH';
 const DEST = 'CWB';
 
 async function getToken() {
-  const res = await fetch('https://api.amadeus.com/v1/security/oauth2/token', {
+    const res = await fetch('https://test.api.amadeus.com/v1/security/oauth2/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: `grant_type=client_credentials&client_id=${KEY}&client_secret=${SECRET}`
@@ -27,7 +27,7 @@ async function getToken() {
 }
 
 async function searchFlights(token, orig, dest, date) {
-  const url = new URL('https://api.amadeus.com/v2/shopping/flight-offers');
+  const url = new URL('https://test.api.amadeus.com/v2/shopping/flight-offers');
   url.searchParams.set('originLocationCode', orig);
   url.searchParams.set('destinationLocationCode', dest);
   url.searchParams.set('departureDate', date);
