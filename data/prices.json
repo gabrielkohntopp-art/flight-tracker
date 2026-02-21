@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-02-20T23:38:12.182Z",
+  "generatedAt": "2026-02-21T10:56:22.423Z",
   "config": {
     "origin": "CGH",
     "destination": "CWB",
@@ -11,14 +11,14 @@
     {
       "thursday": "2026-02-26",
       "sunday": "2026-03-01",
-      "updatedAt": "2026-02-20T23:37:45.780Z",
+      "updatedAt": "2026-02-21T10:55:56.073Z",
       "combos": [
         {
           "airline": "Azul+GOL",
           "airlineCode": "MIX",
-          "idaPrice": 2053.12,
-          "voltaPrice": 835.8,
-          "totalPrice": 2888.92,
+          "idaPrice": 2043.57,
+          "voltaPrice": 832.01,
+          "totalPrice": 2875.58,
           "idaDeparture": "2026-02-26T21:20:00",
           "voltaDeparture": "2026-03-01T20:45:00",
           "mixed": true
@@ -26,9 +26,9 @@
         {
           "airline": "Azul",
           "airlineCode": "AD",
-          "idaPrice": 2053.12,
-          "voltaPrice": 1489,
-          "totalPrice": 3542.12,
+          "idaPrice": 2043.57,
+          "voltaPrice": 1482.08,
+          "totalPrice": 3525.65,
           "idaDeparture": "2026-02-26T21:20:00",
           "voltaDeparture": "2026-03-01T20:05:00"
         }
@@ -37,23 +37,23 @@
     {
       "thursday": "2026-03-05",
       "sunday": "2026-03-08",
-      "updatedAt": "2026-02-20T23:37:48.862Z",
+      "updatedAt": "2026-02-21T10:55:59.006Z",
       "combos": [
         {
           "airline": "GOL",
           "airlineCode": "G3",
-          "idaPrice": 506.32,
-          "voltaPrice": 490.9,
-          "totalPrice": 997.22,
+          "idaPrice": 504.19,
+          "voltaPrice": 488.77,
+          "totalPrice": 992.96,
           "idaDeparture": "2026-03-05T21:00:00",
           "voltaDeparture": "2026-03-08T18:00:00"
         },
         {
           "airline": "LATAM",
           "airlineCode": "LA",
-          "idaPrice": 1404.71,
-          "voltaPrice": 898.07,
-          "totalPrice": 2302.78,
+          "idaPrice": 1398.19,
+          "voltaPrice": 893.92,
+          "totalPrice": 2292.11,
           "idaDeparture": "2026-03-05T20:10:00",
           "voltaDeparture": "2026-03-08T18:45:00"
         }
@@ -62,23 +62,23 @@
     {
       "thursday": "2026-03-12",
       "sunday": "2026-03-15",
-      "updatedAt": "2026-02-20T23:37:52.040Z",
+      "updatedAt": "2026-02-21T10:56:01.717Z",
       "combos": [
         {
           "airline": "GOL",
           "airlineCode": "G3",
-          "idaPrice": 506.32,
-          "voltaPrice": 459.55,
-          "totalPrice": 965.87,
+          "idaPrice": 504.19,
+          "voltaPrice": 457.57,
+          "totalPrice": 961.76,
           "idaDeparture": "2026-03-12T21:00:00",
           "voltaDeparture": "2026-03-15T18:00:00"
         },
         {
           "airline": "Azul",
           "airlineCode": "AD",
-          "idaPrice": 814.63,
-          "voltaPrice": 605.86,
-          "totalPrice": 1420.49,
+          "idaPrice": 811.02,
+          "voltaPrice": 603.18,
+          "totalPrice": 1414.2,
           "idaDeparture": "2026-03-12T21:20:00",
           "voltaDeparture": "2026-03-15T20:05:00"
         }
@@ -87,23 +87,23 @@
     {
       "thursday": "2026-03-19",
       "sunday": "2026-03-22",
-      "updatedAt": "2026-02-20T23:37:54.949Z",
+      "updatedAt": "2026-02-21T10:56:04.107Z",
       "combos": [
         {
           "airline": "GOL",
           "airlineCode": "G3",
-          "idaPrice": 474.97,
-          "voltaPrice": 260.97,
-          "totalPrice": 735.94,
+          "idaPrice": 472.99,
+          "voltaPrice": 259.94,
+          "totalPrice": 732.93,
           "idaDeparture": "2026-03-19T21:00:00",
           "voltaDeparture": "2026-03-22T18:00:00"
         },
         {
           "airline": "LATAM",
           "airlineCode": "LA",
-          "idaPrice": 568.59,
-          "voltaPrice": 401.63,
-          "totalPrice": 970.22,
+          "idaPrice": 566.1,
+          "voltaPrice": 399.86,
+          "totalPrice": 965.96,
           "idaDeparture": "2026-03-19T20:10:00",
           "voltaDeparture": "2026-03-22T18:45:00"
         }
@@ -112,23 +112,23 @@
     {
       "thursday": "2026-03-26",
       "sunday": "2026-03-29",
-      "updatedAt": "2026-02-20T23:37:57.689Z",
+      "updatedAt": "2026-02-21T10:56:06.893Z",
       "combos": [
         {
           "airline": "Azul",
           "airlineCode": "AD",
-          "idaPrice": 365.22,
-          "voltaPrice": 349.8,
-          "totalPrice": 715.02,
+          "idaPrice": 363.77,
+          "voltaPrice": 348.35,
+          "totalPrice": 712.12,
           "idaDeparture": "2026-03-26T21:20:00",
           "voltaDeparture": "2026-03-29T20:05:00"
         },
         {
           "airline": "LATAM",
           "airlineCode": "LA",
-          "idaPrice": 417.05,
-          "voltaPrice": 401.63,
-          "totalPrice": 818.68,
+          "idaPrice": 415.28,
+          "voltaPrice": 399.86,
+          "totalPrice": 815.14,
           "idaDeparture": "2026-03-26T20:10:00",
           "voltaDeparture": "2026-03-29T18:40:00"
         }
@@ -137,14 +137,14 @@
     {
       "thursday": "2026-04-02",
       "sunday": "2026-04-05",
-      "updatedAt": "2026-02-20T23:38:00.188Z",
+      "updatedAt": "2026-02-21T10:56:09.841Z",
       "combos": [
         {
           "airline": "LATAM+Azul",
           "airlineCode": "MIX",
-          "idaPrice": 735.82,
-          "voltaPrice": 349.8,
-          "totalPrice": 1085.62,
+          "idaPrice": 732.52,
+          "voltaPrice": 348.35,
+          "totalPrice": 1080.87,
           "idaDeparture": "2026-04-02T20:10:00",
           "voltaDeparture": "2026-04-05T19:40:00",
           "mixed": true
@@ -152,18 +152,18 @@
         {
           "airline": "Azul",
           "airlineCode": "AD",
-          "idaPrice": 814.63,
-          "voltaPrice": 349.8,
-          "totalPrice": 1164.43,
+          "idaPrice": 811.02,
+          "voltaPrice": 348.35,
+          "totalPrice": 1159.37,
           "idaDeparture": "2026-04-02T21:30:00",
           "voltaDeparture": "2026-04-05T19:40:00"
         },
         {
           "airline": "LATAM",
           "airlineCode": "LA",
-          "idaPrice": 735.82,
-          "voltaPrice": 898.07,
-          "totalPrice": 1633.89,
+          "idaPrice": 732.52,
+          "voltaPrice": 893.92,
+          "totalPrice": 1626.44,
           "idaDeparture": "2026-04-02T20:10:00",
           "voltaDeparture": "2026-04-05T18:40:00"
         }
@@ -172,23 +172,23 @@
     {
       "thursday": "2026-04-09",
       "sunday": "2026-04-12",
-      "updatedAt": "2026-02-20T23:38:02.665Z",
+      "updatedAt": "2026-02-21T10:56:12.656Z",
       "combos": [
         {
           "airline": "Azul",
           "airlineCode": "AD",
-          "idaPrice": 365.22,
-          "voltaPrice": 349.8,
-          "totalPrice": 715.02,
+          "idaPrice": 363.77,
+          "voltaPrice": 348.35,
+          "totalPrice": 712.12,
           "idaDeparture": "2026-04-09T21:30:00",
           "voltaDeparture": "2026-04-12T19:40:00"
         },
         {
           "airline": "LATAM",
           "airlineCode": "LA",
-          "idaPrice": 552.92,
-          "voltaPrice": 401.63,
-          "totalPrice": 954.55,
+          "idaPrice": 550.5,
+          "voltaPrice": 399.86,
+          "totalPrice": 950.36,
           "idaDeparture": "2026-04-09T20:10:00",
           "voltaDeparture": "2026-04-12T18:40:00"
         }
@@ -197,23 +197,23 @@
     {
       "thursday": "2026-04-16",
       "sunday": "2026-04-19",
-      "updatedAt": "2026-02-20T23:38:05.504Z",
+      "updatedAt": "2026-02-21T10:56:15.392Z",
       "combos": [
         {
           "airline": "Azul",
           "airlineCode": "AD",
-          "idaPrice": 365.22,
-          "voltaPrice": 349.8,
-          "totalPrice": 715.02,
+          "idaPrice": 363.77,
+          "voltaPrice": 348.35,
+          "totalPrice": 712.12,
           "idaDeparture": "2026-04-16T21:30:00",
           "voltaDeparture": "2026-04-19T19:40:00"
         },
         {
           "airline": "LATAM",
           "airlineCode": "LA",
-          "idaPrice": 417.05,
-          "voltaPrice": 401.63,
-          "totalPrice": 818.68,
+          "idaPrice": 415.28,
+          "voltaPrice": 399.86,
+          "totalPrice": 815.14,
           "idaDeparture": "2026-04-16T20:10:00",
           "voltaDeparture": "2026-04-19T19:55:00"
         }
@@ -222,14 +222,14 @@
     {
       "thursday": "2026-04-23",
       "sunday": "2026-04-26",
-      "updatedAt": "2026-02-20T23:38:08.208Z",
+      "updatedAt": "2026-02-21T10:56:18.011Z",
       "combos": [
         {
           "airline": "Azul+LATAM",
           "airlineCode": "MIX",
-          "idaPrice": 339.09,
-          "voltaPrice": 344.15,
-          "totalPrice": 683.24,
+          "idaPrice": 337.77,
+          "voltaPrice": 342.65,
+          "totalPrice": 680.42,
           "idaDeparture": "2026-04-23T21:30:00",
           "voltaDeparture": "2026-04-26T18:40:00",
           "mixed": true
@@ -237,18 +237,18 @@
         {
           "airline": "Azul",
           "airlineCode": "AD",
-          "idaPrice": 339.09,
-          "voltaPrice": 349.8,
-          "totalPrice": 688.89,
+          "idaPrice": 337.77,
+          "voltaPrice": 348.35,
+          "totalPrice": 686.12,
           "idaDeparture": "2026-04-23T21:30:00",
           "voltaDeparture": "2026-04-26T19:40:00"
         },
         {
           "airline": "LATAM",
           "airlineCode": "LA",
-          "idaPrice": 359.57,
-          "voltaPrice": 344.15,
-          "totalPrice": 703.72,
+          "idaPrice": 358.07,
+          "voltaPrice": 342.65,
+          "totalPrice": 700.72,
           "idaDeparture": "2026-04-23T20:10:00",
           "voltaDeparture": "2026-04-26T18:40:00"
         }
@@ -257,14 +257,14 @@
     {
       "thursday": "2026-04-30",
       "sunday": "2026-05-03",
-      "updatedAt": "2026-02-20T23:38:10.681Z",
+      "updatedAt": "2026-02-21T10:56:20.923Z",
       "combos": [
         {
           "airline": "Azul+LATAM",
           "airlineCode": "MIX",
-          "idaPrice": 814.63,
-          "voltaPrice": 553.17,
-          "totalPrice": 1367.8,
+          "idaPrice": 811.02,
+          "voltaPrice": 550.68,
+          "totalPrice": 1361.7,
           "idaDeparture": "2026-04-30T21:30:00",
           "voltaDeparture": "2026-05-03T18:40:00",
           "mixed": true
@@ -272,18 +272,18 @@
         {
           "airline": "LATAM",
           "airlineCode": "LA",
-          "idaPrice": 913.49,
-          "voltaPrice": 553.17,
-          "totalPrice": 1466.66,
+          "idaPrice": 909.34,
+          "voltaPrice": 550.68,
+          "totalPrice": 1460.02,
           "idaDeparture": "2026-04-30T20:10:00",
           "voltaDeparture": "2026-05-03T18:40:00"
         },
         {
           "airline": "Azul",
           "airlineCode": "AD",
-          "idaPrice": 814.63,
-          "voltaPrice": 1191.14,
-          "totalPrice": 2005.77,
+          "idaPrice": 811.02,
+          "voltaPrice": 1185.65,
+          "totalPrice": 1996.67,
           "idaDeparture": "2026-04-30T21:30:00",
           "voltaDeparture": "2026-05-03T19:40:00"
         }
