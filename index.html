@@ -413,7 +413,8 @@ function nextWeek(){ if(weekOffset < 11) weekOffset++; renderWeek();  function n
         while (n > 0x7f) { bytes.push((n & 0x7f) | 0x80); n >>>= 7; }
         bytes.push(n & 0x7f);
         return bytes;
-      }
+      function prevWeek(){ weekOffset = Math.max(0,weekOffset-1); renderWeek(); renderBuySignal(); }
+                                                                                                                           function nextWeek(){ if(weekOffset < 11) weekOffset++; renderWeek(); renderBuySignal(); }
       function toBytes(s) { return Array.from(s).map(c => c.charCodeAt(0)); }
       function fieldBytes(fn, wt, ...v) { return [...encodeVarint((fn << 3) | wt), ...v]; }
       function ld(fn, inner) { return [...encodeVarint((fn << 3) | 2), ...encodeVarint(inner.length), ...inner]; }
