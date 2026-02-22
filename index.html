@@ -704,11 +704,9 @@ const editId = document.getElementById('overlay').dataset.editId; if(editId){ co
         '<td><span class="cia-badge"><span class="cia-dot" style="background:'+(COR[f.cia]||'#888')+'"></span>'+f.cia+'</span></td>'+
         '<td class="date-cell">'+fmtDt(f.data)+'</td><td class="time-cell">'+(f.hora||'—')+'</td>'+
         '<td class="price-cell">'+fmtBRL(f.preco)+'</td>'+
-   <button class="edt-btn" onclick="editFlight('+f.id+')">✎</button>     '<td><button class="del-btn" onclick="del('+f.id+')">✕</button></td></tr>').join('')+
-        '</tbody></table>';
+'<td><button class="edt-btn" onclick="editFlight('+f.id+')")>&Check;</button></td>'+'<td><button class="del-btn" onclick="del('+f.id+')">✕</button></td></tr>').join('')+        '</tbody></table>';
     }
 
-h'<td><button class="del-btn" onclick="del('+f.id+')">✕</button></td></tr>'    function del(id){ flights=flights.filter(f=>f.id!==id); save(); render(); }
     function editFlight(id){ const f = flights.find(x => x.id === id); if(!f) return; document.getElementById('m-origem').value = f.orig; document.getElementById('m-destino').value = f.dest; document.getElementById('m-cia').value = f.cia; document.getElementById('m-data').value = f.data; document.getElementById('m-hora').value = f.hora || ''; document.getElementById('m-preco').value = f.preco; document.getElementById('m-context').textContent = 'Editando: ' + f.orig + ' → ' + f.dest + ' · ' + fmtDt(f.data) + ' · ' + f.cia; document.getElementById('overlay').dataset.editId = id; document.getElementById('overlay').classList.add('open'); }
 
     function renderAnalytics(){
