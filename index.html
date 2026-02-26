@@ -705,7 +705,7 @@ const editId = document.getElementById('overlay').dataset.editId; if(editId){ co
         '<td><span class="cia-badge"><span class="cia-dot" style="background:'+(COR[f.cia]||'#888')+'"></span>'+f.cia+'</span></td>'+
         '<td class="date-cell">'+fmtDt(f.data)+'</td><td class="time-cell">'+(f.hora||'—')+'</td>'+
         '<td class="price-cell">'+fmtBRL(f.preco)+'</td>'+
-'<td><button class="edt-btn" h&Check;  746
+'<td><button class="edt-btn" onclick="editFlight('+f.id+')"  746
           '+f.id+')")>&Check;</button></td>'+'<td><button class="del-btn" onclick="del('+f.id+')">✕</button></td></tr>').join('')+        '</tbody></table>';
     }
 
@@ -822,3 +822,4 @@ const now = new Date();
   </script>
 </body>
 </html>
+h
