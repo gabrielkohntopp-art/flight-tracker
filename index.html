@@ -108,7 +108,6 @@
     .empty-state .icon{font-size:36px;margin-bottom:10px;}
     .form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
     @media(max-width:560px){.form-grid{grid-template-columns:1fr 1fr;}}
-    .edt-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;padding:4px 8px;border-radius:3px;transition:all .2s;} .edt-btn:hover{color:var(--accent);background:rgba(59,130,246,.1);}
     .field{display:flex;flex-direction:column;gap:6px;}
     .field label{font-size:10px;color:var(--muted2);letter-spacing:1px;text-transform:uppercase;}
     .inp{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 14px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;outline:none;transition:border-color .2s;width:100%;}
@@ -393,7 +392,8 @@
       const thu = new Date(today);
       thu.setDate(today.getDate() + diff + offset * 7);
       return thu;
-function nextWeek(){ if(weekOffset < 11) weekOffset++; renderWeek();  function nextWeek(){ if(weekOffset < 11) weekOffset++; renderWeek(); renderBuySignal();    function getSunday(thu){
+    }
+    function getSunday(thu){
       const sun = new Date(thu);
       sun.setDate(thu.getDate() + 3);
       return sun;
@@ -409,12 +409,11 @@ function nextWeek(){ if(weekOffset < 11) weekOffset++; renderWeek();  function n
 
     function buildGoogleFlightsURL(orig, dest, dateIda, dateVolta, airline, minHourIda, minHourVolta) {
       function encodeVarint(n) {
-        const bytes = []; weekOffset = Math.max(0,weekOffset-1); renderWeek();  function prevWeek(){ weekOffset = Math.max(0,weekOffset-1); renderWeek(); renderBuySignal();h
+        const bytes = [];
         while (n > 0x7f) { bytes.push((n & 0x7f) | 0x80); n >>>= 7; }
         bytes.push(n & 0x7f);
         return bytes;
-      function prevWeek(){ weekOffset = Math.max(0,weekOffset-1); renderWeek(); renderBuySignal(); }
-                                                                                                                           function nextWeek(){ if(weekOffset < 11) weekOffset++; renderWeek(); renderBuySignal(); }
+      }
       function toBytes(s) { return Array.from(s).map(c => c.charCodeAt(0)); }
       function fieldBytes(fn, wt, ...v) { return [...encodeVarint((fn << 3) | wt), ...v]; }
       function ld(fn, inner) { return [...encodeVarint((fn << 3) | 2), ...encodeVarint(inner.length), ...inner]; }
@@ -626,8 +625,7 @@ function nextWeek(){ if(weekOffset < 11) weekOffset++; renderWeek();  function n
         rankingExplain + '</div>';
     }
 
-    707
-    { weekOffset = Math.max(0,weekOffset-1); renderWeek(); }
+    function prevWeek(){ weekOffset = Math.max(0,weekOffset-1); renderWeek(); }
     function nextWeek(){ if(weekOffset < 11) weekOffset++; renderWeek(); }
 
     // ── Modal ──
@@ -651,7 +649,10 @@ function nextWeek(){ if(weekOffset < 11) weekOffset++; renderWeek();  function n
       const hora = document.getElementById('m-hora').value;
       const preco = parseFloat(document.getElementById('m-preco').value);
       if(!preco || preco <= 0){ alert('Insira o preco pago.'); return; }
-const editId = document.getElementById('overlay').dataset.editId; if(editId){ const f = flights.find(x => x.id === parseInt(editId)); if(f){ f.orig = orig; f.dest = dest; f.cia = cia; f.data = data; f.hora = hora; f.preco = preco; document.getElementById('overlay').dataset.editId = ''; } } else { flights.unshift({id:Date.now(),orig,dest,cia,data,hora,preco}); } save(); render(); closeModal(); showToast(editId ? '✓ Passagem atualizada!' : '✓ Passagem registrada no tracker!');    }
+      flights.unshift({id:Date.now(),orig,dest,cia,data,hora,preco});
+      save(); render(); closeModal();
+      showToast('✓ Passagem registrada no tracker!');
+    }
 
     // ── Manual ──
     function addManual(){
@@ -705,11 +706,11 @@ const editId = document.getElementById('overlay').dataset.editId; if(editId){ co
         '<td><span class="cia-badge"><span class="cia-dot" style="background:'+(COR[f.cia]||'#888')+'"></span>'+f.cia+'</span></td>'+
         '<td class="date-cell">'+fmtDt(f.data)+'</td><td class="time-cell">'+(f.hora||'—')+'</td>'+
         '<td class="price-cell">'+fmtBRL(f.preco)+'</td>'+
-'<td><button class="edt-btn" onclick="editFlight('+f.id+')"  746
-          '+f.id+')")>&Check;</button></td>'+'<td><button class="del-btn" onclick="del('+f.id+')">✕</button></td></tr>').join('')+        '</tbody></table>';
+        '<td><button class="del-btn" onclick="del('+f.id+')">✕</button></td></tr>').join('')+
+        '</tbody></table>';
     }
 
-    function editFlight(id){ const f = flights.find(x => x.id === id); if(!f) return; document.getElementById('m-origem').value = f.orig; document.getElementById('m-destino').value = f.dest; document.getElementById('m-cia').value = f.cia; document.getElementById('m-data').value = f.data; document.getElementById('m-hora').value = f.hora || ''; document.getElementById('m-preco').value = f.preco; document.getElementById('m-context').textContent = 'Editando: ' + f.orig + ' → ' + f.dest + ' · ' + fmtDt(f.data) + ' · ' + f.cia; document.getElementById('overlay').dataset.editId = id; document.getElementById('overlay').classList.add('open'); }
+    function del(id){ flights=flights.filter(f=>f.id!==id); save(); render(); }
 
     function renderAnalytics(){
       const byM={};
@@ -742,12 +743,14 @@ const editId = document.getElementById('overlay').dataset.editId; if(editId){ co
 
     // ── Buy Signal ──
     function renderBuySignal() {
-const now = new Date();
-          const dow = now.getDay();
-          const hour = now.getHours();
-          const thu = getThursday(weekOffset);
-          const daysUntilFlight = Math.ceil((thu - now) / (1000*60*60*24));
-              let score = 50;
+      const now = new Date();
+      const dow = now.getDay();
+      const hour = now.getHours();
+      const thu = new Date(now);
+      const diffToThu = (4 - dow + 7) % 7 || 7;
+      thu.setDate(now.getDate() + diffToThu);
+      const daysUntilFlight = Math.ceil((thu - now) / (1000*60*60*24));
+      let score = 50;
       const dayScore = {0:-20, 1:5, 2:20, 3:20, 4:-5, 5:-15, 6:-20};
       score += dayScore[dow] || 0;
       if (hour >= 0 && hour < 6) score += 10;
@@ -822,4 +825,3 @@ const now = new Date();
   </script>
 </body>
 </html>
-h
