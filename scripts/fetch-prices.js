@@ -6,6 +6,9 @@
 // v2 — 2026-03-01: Production API with test fallback, removed nonStop constraint,
 //       improved LATAM carrier handling (JJ + LA), added retry logic,
 //       relaxed time filters as fallback, better logging.
+// v3 — 2026-03-01: Fixed GOL missing from results — added '2Z' to CIA_CODES
+//     (GOL sometimes uses code 2Z in Amadeus API, was in CIA_MAP but not CIA_CODES),
+//     airlineCode output now maps 2Z→G3 alongside JJ→LA.
 //
 // Usage: AMADEUS_KEY=xxx AMADEUS_SECRET=yyy node scripts/fetch-prices.js
 // Optional: AMADEUS_ENV=test to force test API (synthetic prices)
@@ -159,7 +162,7 @@ function getNextThursdays(count) {
 const CIA_MAP = {
         G3: 'GOL', JJ: 'LATAM', LA: 'LATAM', AD: 'Azul', '2Z': 'GOL'
 };
-const CIA_CODES = ['G3', 'LA', 'JJ', 'AD'];
+const CIA_CODES = ['G3', '2Z', 'LA', 'JJ', 'AD'];
 
 function normalizeAirline(code) {
         return CIA_MAP[code] || code;
@@ -260,7 +263,7 @@ function delay(ms) {
                      if (bestIda && bestVolta) {
                                          combos.push({
                                                                  airline: name,
-                                                                 airlineCode: code === 'JJ' ? 'LA' : code,
+                                                                 airlineCode: code === 'JJ' ? 'LA' : code === '2Z' ? 'G3' : code,
                                                                  idaPrice: bestIda.price,
                                                                  voltaPrice: bestVolta.price,
                                                                  totalPrice: +(bestIda.price + bestVolta.price).toFixed(2),
