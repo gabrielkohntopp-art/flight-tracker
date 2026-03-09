@@ -626,7 +626,7 @@
     }
 
     function prevWeek(){ weekOffset = Math.max(0,weekOffset-1); renderWeek(); }
-    function nextWeek(){ const maxOff = (() => { const end = new Date(2026,11,31); const today = new Date(); const diff = Math.ceil((end - today) / (7*24*3600*1000)) + 2; return Math.max(11, diff); })(); if(weekOffset < maxOff) weekOffset++; renderWeek(); }
+    function nextWeek(){ const maxOff = (() => { const today = new Date(); const day = today.getDay(); const diff = (4 - day + 7) % 7 || 7; const firstThu = new Date(today); firstThu.setDate(today.getDate() + diff); const end = new Date(2026,11,31); return Math.floor((end - firstThu) / (7*24*3600*1000)); })(); if(weekOffset < maxOff) weekOffset++; renderWeek(); }
 
     // ── Modal ──
     function openModal(orig,dest,cia,date){
