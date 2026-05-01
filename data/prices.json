@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-29T11:28:34.267Z",
+  "generatedAt": "2026-05-01T11:05:57.856Z",
   "apiSource": "test",
   "config": {
     "origin": "CGH",
@@ -10,63 +10,63 @@
   },
   "weeks": [
     {
-      "thursday": "2026-04-30",
-      "sunday": "2026-05-03",
-      "updatedAt": "2026-04-29T11:26:16.738Z",
-      "combos": []
-    },
-    {
       "thursday": "2026-05-07",
       "sunday": "2026-05-10",
-      "updatedAt": "2026-04-29T11:26:31.793Z",
+      "updatedAt": "2026-05-01T11:03:43.025Z",
       "combos": []
     },
     {
       "thursday": "2026-05-14",
       "sunday": "2026-05-17",
-      "updatedAt": "2026-04-29T11:26:46.896Z",
+      "updatedAt": "2026-05-01T11:03:57.783Z",
       "combos": []
     },
     {
       "thursday": "2026-05-21",
       "sunday": "2026-05-24",
-      "updatedAt": "2026-04-29T11:27:01.941Z",
+      "updatedAt": "2026-05-01T11:04:12.741Z",
       "combos": []
     },
     {
       "thursday": "2026-05-28",
       "sunday": "2026-05-31",
-      "updatedAt": "2026-04-29T11:27:17.001Z",
+      "updatedAt": "2026-05-01T11:04:27.731Z",
       "combos": []
     },
     {
       "thursday": "2026-06-04",
       "sunday": "2026-06-07",
-      "updatedAt": "2026-04-29T11:27:31.934Z",
+      "updatedAt": "2026-05-01T11:04:42.557Z",
       "combos": []
     },
     {
       "thursday": "2026-06-11",
       "sunday": "2026-06-14",
-      "updatedAt": "2026-04-29T11:27:47.301Z",
+      "updatedAt": "2026-05-01T11:04:57.302Z",
       "combos": []
     },
     {
       "thursday": "2026-06-18",
       "sunday": "2026-06-21",
-      "updatedAt": "2026-04-29T11:28:02.346Z",
+      "updatedAt": "2026-05-01T11:05:12.080Z",
       "combos": []
     },
     {
       "thursday": "2026-06-25",
       "sunday": "2026-06-28",
-      "updatedAt": "2026-04-29T11:28:17.314Z",
+      "updatedAt": "2026-05-01T11:05:26.844Z",
       "combos": []
     },
     {
       "thursday": "2026-07-02",
       "sunday": "2026-07-05",
-      "updatedAt": "2026-04-29T11:28:32.766Z",
+      "updatedAt": "2026-05-01T11:05:41.612Z",
+      "combos": []
+    },
+    {
+      "thursday": "2026-07-09",
+      "sunday": "2026-07-12",
+      "updatedAt": "2026-05-01T11:05:56.356Z",
       "combos": []
     }
   ]
