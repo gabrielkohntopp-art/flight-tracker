@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-09T10:56:34.806Z",
+  "generatedAt": "2026-05-11T12:38:56.251Z",
   "apiSource": "test",
   "config": {
     "origin": "CGH",
@@ -12,61 +12,61 @@
     {
       "thursday": "2026-05-14",
       "sunday": "2026-05-17",
-      "updatedAt": "2026-05-09T10:54:07.052Z",
+      "updatedAt": "2026-05-11T12:36:38.875Z",
       "combos": []
     },
     {
       "thursday": "2026-05-21",
       "sunday": "2026-05-24",
-      "updatedAt": "2026-05-09T10:54:22.053Z",
+      "updatedAt": "2026-05-11T12:36:53.790Z",
       "combos": []
     },
     {
       "thursday": "2026-05-28",
       "sunday": "2026-05-31",
-      "updatedAt": "2026-05-09T10:54:42.059Z",
+      "updatedAt": "2026-05-11T12:37:08.754Z",
       "combos": []
     },
     {
       "thursday": "2026-06-04",
       "sunday": "2026-06-07",
-      "updatedAt": "2026-05-09T10:54:57.445Z",
+      "updatedAt": "2026-05-11T12:37:23.784Z",
       "combos": []
     },
     {
       "thursday": "2026-06-11",
       "sunday": "2026-06-14",
-      "updatedAt": "2026-05-09T10:55:12.484Z",
+      "updatedAt": "2026-05-11T12:37:39.903Z",
       "combos": []
     },
     {
       "thursday": "2026-06-18",
       "sunday": "2026-06-21",
-      "updatedAt": "2026-05-09T10:55:27.427Z",
+      "updatedAt": "2026-05-11T12:37:54.795Z",
       "combos": []
     },
     {
       "thursday": "2026-06-25",
       "sunday": "2026-06-28",
-      "updatedAt": "2026-05-09T10:55:47.864Z",
+      "updatedAt": "2026-05-11T12:38:09.701Z",
       "combos": []
     },
     {
       "thursday": "2026-07-02",
       "sunday": "2026-07-05",
-      "updatedAt": "2026-05-09T10:56:03.328Z",
+      "updatedAt": "2026-05-11T12:38:24.596Z",
       "combos": []
     },
     {
       "thursday": "2026-07-09",
       "sunday": "2026-07-12",
-      "updatedAt": "2026-05-09T10:56:18.360Z",
+      "updatedAt": "2026-05-11T12:38:39.793Z",
       "combos": []
     },
     {
       "thursday": "2026-07-16",
       "sunday": "2026-07-19",
-      "updatedAt": "2026-05-09T10:56:33.305Z",
+      "updatedAt": "2026-05-11T12:38:54.750Z",
       "combos": []
     }
   ]
